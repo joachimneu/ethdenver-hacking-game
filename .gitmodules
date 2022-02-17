@@ -1,3 +1,6 @@
 [submodule "game/lib/ds-test"]
 	path = game/lib/ds-test
 	url = https://github.com/dapphub/ds-test
+[submodule "game/lib/openzeppelin-contracts"]
+	path = game/lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
