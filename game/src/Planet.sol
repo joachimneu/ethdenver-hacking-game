@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 contract Planet is ERC721 {
     constructor() ERC721("Planet", "PLNT") {}
 
-    function _baseURI() internal pure override returns (string memory) {
-        return "https://galacticwar.com/";
-    }
+    // function _baseURI() internal pure override returns (string memory) {
+    //     return "https://galacticwar.com/";
+    // }
 }
