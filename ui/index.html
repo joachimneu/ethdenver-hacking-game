@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script type="module">
+            import { ethers } from "./ethers-5.2.esm.min.js";
+
+            const CONTRACT_ADDRESS_URANIUM = "";
+            const CONTRACT_ADDRESS_SPACESHIP = "";
+            const CONTRACT_ADDRESS_PLANET = "";
+            
+
+            // A Web3Provider wraps a standard Web3 provider, which is
+            // what MetaMask injects as window.ethereum into each page
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+            // MetaMask requires requesting permission to connect users accounts
+            await provider.send("eth_requestAccounts", []);
+
+            // The MetaMask plugin also allows signing transactions to
+            // send ether and pay to change state within the blockchain.
+            // For this, you need the account signer...
+            const signer = provider.getSigner();
+
+
+            const UraniumContract = new ethers.ERC20Contract(CONTRACT_ADDRESS_URANIUM, provider);
+            const SpaceshipContract = new ethers.ERC20Contract(CONTRACT_ADDRESS_SPACESHIP, provider);
+            // const PlanetContract = new ethers.ERC20Contract(CONTRACT_ADDRESS_PLANET, provider);
+
+
+            function update_view() {
+                // $("#display_blockheight").text = provider.b;
+            }
+
+
+            console.log(provider);
+            console.log(signer);
+        </script>
+        <!-- ⏳ -->
+        <!-- 🛡️ -->
+    </head>
+    <body>
+        <div>
+            <p>
+                <span>⌚</span>
+                <span id="display_blockheight"></span>
+            </p>
+            <p>
+                <span>☢️</span>
+                <span id="display_uranium"></span>
+            </p>
+            <p>
+                <span>🚀</span>
+                <span id="display_spaceships"></span>
+            </p>
+        </div>
+    </body>
+</html>
