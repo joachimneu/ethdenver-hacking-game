@@ -20,9 +20,9 @@ contract Planet is ERC721 {
     mapping(uint256 => uint) private _uranium_last_payout_block;
 
 
-    constructor(Uranium uran, Spaceship ship) ERC721("Planet", "PLNT") {
-        _Uranium = uran;
-        _Spaceship = ship;
+    constructor(address uran, address ship) ERC721("Planet", "PLNT") {
+        _Uranium = Uranium(uran);
+        _Spaceship = Spaceship(ship);
     }
 
     // function _baseURI() internal pure override returns (string memory) {
