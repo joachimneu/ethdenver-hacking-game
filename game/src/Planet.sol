@@ -7,18 +7,20 @@ import "../lib/openzeppelin-contracts/contracts/utils/math/Math.sol";
 import "../src/Uranium.sol";
 import "../src/Spaceship.sol";
 
+struct Planet {
+    uint num_shields;
+    uint uranium_rate;
+    uint uranium_end_block;
+    uint uranium_last_payout_block;
+}
 
-contract Planet is ERC721 {
+contract Galaxy is ERC721 {
     // dependencies on other contracts
     Uranium _Uranium;
     Spaceship _Spaceship;
 
     // Mapping from token ID to ...
-    mapping(uint256 => uint) private _num_shields;
-    mapping(uint256 => uint) private _uranium_rate;
-    mapping(uint256 => uint) private _uranium_end_block;
-    mapping(uint256 => uint) private _uranium_last_payout_block;
-
+    mapping(uint256 => Planet) private planets;
 
     constructor(address uran, address ship) ERC721("Planet", "PLNT") {
         _Uranium = Uranium(uran);
