@@ -4,10 +4,10 @@ pragma solidity ^0.8.10;
 import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 import "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 
-contract Spaceship is ERC20, Ownable {
+contract Resource is ERC20, Ownable {
     address planet;
     
-    constructor() ERC20("Spaceship", "SHIP") {
+    constructor(string memory name, string memory ticker) ERC20(name, ticker) {
     }
 
     function setup(address planetAddr) public onlyOwner {
