@@ -2,11 +2,17 @@
 pragma solidity ^0.8.10;
 
 import "ds-test/test.sol";
+import "../Resource.sol";
+import "../Galaxy.sol";
 
 contract ContractTest is DSTest {
-    function setUp() public {}
+    Galaxy g;
+    Resource u;
+    Resource s;
 
-    function testExample() public {
-        assertTrue(true);
+    function setUp() public {
+        u = new Resource("Uranium", "U");
+        s = new Resource("Spaceship", "S");
+        g = new Galaxy(address(u), address(s));
     }
 }
