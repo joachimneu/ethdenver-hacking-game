@@ -5,12 +5,9 @@
         <script src="./jquery-3.6.0.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script src="./abi_Resource.js"></script>
         <script src="./abi_Galaxy.js"></script>
+        <script src="./contracts.js"></script>
         <script type="module">
             import { ethers } from "./ethers-5.2.esm.min.js";
-
-            const CONTRACT_ADDRESS_URANIUM = "0x603853c9971f013cb76e0caa246a5e1290b1d6bb";
-            const CONTRACT_ADDRESS_SPACESHIP = "0x0b36fe29aa224d5f51e5f9d1bc1fd75c71fafe26";
-            const CONTRACT_ADDRESS_GALAXY = "0x9f1207f61f7e277d8fa2637eae6008165f9285cb";
             
 
             // A Web3Provider wraps a standard Web3 provider, which is
@@ -26,9 +23,9 @@
             const signer = provider.getSigner();
 
 
-            const UraniumContract = new ethers.Contract(CONTRACT_ADDRESS_URANIUM, abi_Resource, provider).connect(signer);
-            const SpaceshipContract = new ethers.Contract(CONTRACT_ADDRESS_SPACESHIP, abi_Resource, provider).connect(signer);
-            const GalaxyContract = new ethers.Contract(CONTRACT_ADDRESS_GALAXY, abi_Galaxy, provider).connect(signer);
+            const UraniumContract = new ethers.Contract(CONTRACT_ADDRESS_URANIUM, ABI_RESOURCE, provider).connect(signer);
+            const SpaceshipContract = new ethers.Contract(CONTRACT_ADDRESS_SPACESHIP, ABI_RESOURCE, provider).connect(signer);
+            const GalaxyContract = new ethers.Contract(CONTRACT_ADDRESS_GALAXY, ABI_GALAXY, provider).connect(signer);
 
 
             // async function setup_galaxy() {
@@ -61,6 +58,11 @@
     </head>
     <body>
         <div>
+            <div>
+                <button id="button_update_view">Update view</button>
+            </div>
+        </div>
+        <div>
             <p>
                 <span>💸</span>
                 <span id="display_eth"></span>
@@ -80,7 +82,26 @@
         </div>
         <div>
             <div>
-                <button id="button_update_view">Update view</button>
+                <h1>Planets</h1>
+                <ol></ol>
+            </div>
+            <div>
+                <h1>Discover</h1>
+                <form id="form_discover">
+                    <input type="submit" />
+                </form>
+            </div>
+            <div>
+                <h1>Mine</h1>
+            </div>
+            <div>
+                <h1>Attack</h1>
+            </div>
+            <div>
+                <h1>Build spaceships</h1>
+            </div>
+            <div>
+                <h1>Build shields</h1>
             </div>
         </div>
     </body>
