@@ -24,8 +24,11 @@ contract ContractTest is DSTest {
         u.setupGalaxy(address(g));
         s.setupGalaxy(address(g));
         cheats.roll(10);
-        tokenId = g.discoveryBegin();
+        tokenId = g.discoveryBegin{value: 1 ether}();
         cheats.roll(20);
         g.discoveryFinalize(tokenId);
+    }
+
+    function testNothing() public {
     }
 }
