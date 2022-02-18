@@ -7,29 +7,31 @@ import "../lib/openzeppelin-contracts/contracts/utils/math/Math.sol";
 import "../src/Uranium.sol";
 import "../src/Spaceship.sol";
 
+struct Planet {
+    uint num_shields;
+    uint uranium_rate;
+    uint uranium_end_block;
+    uint uranium_last_payout_block;
+}
 
-contract Planet is ERC721 {
+contract Galaxy is ERC721 {
     // dependencies on other contracts
     Uranium _Uranium;
     Spaceship _Spaceship;
+    uint256 COST_DISCOVERY_EXPEDITION;
 
     // Mapping from token ID to ...
-    mapping(uint256 => uint) private _num_shields;
-    mapping(uint256 => uint) private _uranium_rate;
-    mapping(uint256 => uint) private _uranium_end_block;
-    mapping(uint256 => uint) private _uranium_last_payout_block;
+    mapping(uint256 => Planet) private planets;
 
-
-    constructor(address uran, address ship) ERC721("Planet", "PLNT") {
+    constructor(address uran, address ship, uint256 cost_discovery_expedition) ERC721("Planet", "PLNT") {
         _Uranium = Uranium(uran);
         _Spaceship = Spaceship(ship);
+        COST_DISCOVERY_EXPEDITION = cost_discovery_expedition;
     }
 
-    // function _baseURI() internal pure override returns (string memory) {
-    //     return "https://galacticwar.com/";
-    // }
-
     function mine(uint256 tokenId) public {
+        require(_discovered[tokenId], "Planet needs to be discovered");
+
         uint mine_until_block = Math.min(_uranium_end_block[tokenId], block.number);
         uint blocks_to_mine_uranium_for = mine_until_block - _uranium_last_payout_block[tokenId];
         // require(blocks_to_mine_uranium_for > 0, "Cannot mine for zero blocks");
@@ -51,6 +53,20 @@ contract Planet is ERC721 {
 	if(attackships > defenses) {
 		transferFrom(ownerOf(tokenId), msg.sender, tokenId);
 	} 
-	
+    }
+    // function attack(uint256 tokenId) public {
+    //     // ...
+    // }
+
+    function discoveryBegin() public payable {
+
+    }
+
+    function discoveryFinalize(uint256 tokenId) public {
+        require(!_discovered[tokenId], "Planet needs to not be discovered");
+        _discovered[tokenId] = true;
+
+        require(_discovery_end_block[tokenId] > 0, "Discovery expedition not begun");
+        require(_discovery_end_block[tokenId] <= block.number, "Discovery expedition not completed");
     }
 }
