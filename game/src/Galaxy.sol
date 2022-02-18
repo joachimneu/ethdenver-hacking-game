@@ -43,6 +43,10 @@ contract Galaxy is ERC721, Ownable {
         _next_token_id = 1;
     }
 
+    function getNumShields(uint256 tokenId) public view returns (uint256) {
+        return _planets[tokenId].num_shields;
+    }
+
     function withdrawDiscoveryExpeditionCosts() public onlyOwner {
         (bool sent, bytes memory data) = msg.sender.call{value: address(this).balance}("");
         require(sent, "Failed to withdraw");
@@ -62,7 +66,7 @@ contract Galaxy is ERC721, Ownable {
             uint256 spaceships_return = spaceships - _planets[tokenId].num_shields * SHIELD_POWER / SPACESHIP_POWER;
             _Spaceship.mint(msg.sender, spaceships_return);
             _planets[tokenId].num_shields = 0;
-            transferFrom(ownerOf(tokenId), msg.sender, tokenId);
+            _transfer(ownerOf(tokenId), msg.sender, tokenId);
             buildShields(tokenId, build_shields_immediately);
         }
     }
