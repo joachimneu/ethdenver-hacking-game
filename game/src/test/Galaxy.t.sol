@@ -13,7 +13,7 @@ contract ContractTest is DSTest {
     Galaxy g;
     Resource u;
     Resource s;
-    uint256 tokenId;
+    uint256 testTokenId;
 
     CheatCodes cheats = CheatCodes(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
 
@@ -24,11 +24,22 @@ contract ContractTest is DSTest {
         u.setupGalaxy(address(g));
         s.setupGalaxy(address(g));
         cheats.roll(10);
-        tokenId = g.discoveryBegin{value: 1 ether}();
+        testTokenId = g.discoveryBegin{value: 1 ether}();
         cheats.roll(20);
-        g.discoveryFinalize(tokenId);
+        g.discoveryFinalize(testTokenId);
     }
 
-    function testNothing() public {
+    function testMine() public {
+        cheats.roll(20);
+        g.mine(testTokenId);
+        assert(u.balanceOf(g.ownerOf(testTokenId))==0);
+        cheats.roll(21);
+        g.mine(testTokenId);
+        assert(u.balanceOf(g.ownerOf(testTokenId))>=10);
+        cheats.roll(23);
+        g.mine(testTokenId);
+        assert(u.balanceOf(g.ownerOf(testTokenId))>=30);
+        // there seems to be no cheatcode in forge to set
+        // block hash
     }
 }
