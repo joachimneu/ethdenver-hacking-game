@@ -67,6 +67,7 @@ contract ContractTest is DSTest {
         g.withdrawDiscoveryExpeditionCosts();
     }
 
+<<<<<<< Updated upstream
     function testBuildSpaceships() public {
         // act as the galaxy to send us some uranium
         cheats.startPrank(address(g));
@@ -83,7 +84,7 @@ contract ContractTest is DSTest {
         cheats.startPrank(address(0x567));
         g.buildShields(testTokenId, 5);
         assert(g.getNumShields(testTokenId)==5);
-
+=======
     function testAttack() public { 
         // defender mints uranium
         cheats.startPrank(address(g));
