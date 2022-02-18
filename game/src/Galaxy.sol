@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.10;
 
-import "../lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
-import "../lib/openzeppelin-contracts/contracts/utils/math/Math.sol";
-import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
+import "openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
+import "openzeppelin-contracts/contracts/utils/math/Math.sol";
+import "openzeppelin-contracts/contracts/access/Ownable.sol";
 
 import "./Resource.sol";
 
@@ -17,7 +17,6 @@ struct Planet {
     uint uranium_end_block;
     uint uranium_last_payout_block;
 }
-
 
 contract Galaxy is ERC721, Ownable {
     uint256 public constant DISCOVERY_COST = 1 ether;
