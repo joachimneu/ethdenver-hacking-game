@@ -5,9 +5,7 @@ import "../lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
 import "../lib/openzeppelin-contracts/contracts/utils/math/Math.sol";
 import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
-import "../src/Uranium.sol";
-import "../src/Spaceship.sol";
-
+import "Resource.sol";
 
 struct Planet {
     bool charted;
@@ -23,8 +21,8 @@ struct Planet {
 
 contract Galaxy is ERC721, Ownable {
     // dependencies on other contracts
-    Uranium _Uranium;
-    Spaceship _Spaceship;
+    Resource _Uranium;
+    Resource _Spaceship;
     uint256 COST_DISCOVERY_EXPEDITION;
     uint256 NEXT_TOKEN_ID;
 
@@ -32,8 +30,8 @@ contract Galaxy is ERC721, Ownable {
     mapping(uint256 => Planet) private _planets;
 
     constructor(address uran, address ship, uint256 cost_discovery_expedition) ERC721("Planet", "PLNT") {
-        _Uranium = Uranium(uran);
-        _Spaceship = Spaceship(ship);
+        _Uranium = Resource(uran);
+        _Spaceship = Resource(ship);
         COST_DISCOVERY_EXPEDITION = cost_discovery_expedition;
         NEXT_TOKEN_ID = 1;
     }
