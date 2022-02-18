@@ -8,9 +8,9 @@
         <script type="module">
             import { ethers } from "./ethers-5.2.esm.min.js";
 
-            const CONTRACT_ADDRESS_URANIUM = "0xcbcf1adc9b7bfb7d871af5bf304cdc5b90d6432e";
-            const CONTRACT_ADDRESS_SPACESHIP = "0xf099eb18c3c57b804784d7173150e78ee33f8cf0";
-            const CONTRACT_ADDRESS_GALAXY = "0x22a59f0202156d315ef8a9141ea724d57fc25cbb";
+            const CONTRACT_ADDRESS_URANIUM = "0x603853c9971f013cb76e0caa246a5e1290b1d6bb";
+            const CONTRACT_ADDRESS_SPACESHIP = "0x0b36fe29aa224d5f51e5f9d1bc1fd75c71fafe26";
+            const CONTRACT_ADDRESS_GALAXY = "0x9f1207f61f7e277d8fa2637eae6008165f9285cb";
             
 
             // A Web3Provider wraps a standard Web3 provider, which is
@@ -48,9 +48,13 @@
 
             await update_view();
 
+            $(function() {
+                $("#button_update_view").on("click", async function() {
+                    await update_view();
+                    console.log("View updated!");
+                });
+            });
 
-            console.log(provider);
-            console.log(signer);
         </script>
         <!-- ⏳ -->
         <!-- 🛡️ -->
@@ -73,6 +77,11 @@
                 <span>🚀</span>
                 <span id="display_spaceships"></span>
             </p>
+        </div>
+        <div>
+            <div>
+                <button id="button_update_view">Update view</button>
+            </div>
         </div>
     </body>
 </html>

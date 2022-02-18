@@ -15,6 +15,6 @@ echo "const CONTRACT_ADDRESS_URANIUM = \"${ADDRESS_URANIUM}\";";
 echo "const CONTRACT_ADDRESS_SPACESHIP = \"${ADDRESS_SPACESHIP}\";";
 echo "const CONTRACT_ADDRESS_GALAXY = \"${ADDRESS_GALAXY}\";";
 
-cast call --rpc-url ${RPC_URL} --private-key ${SECRET_KEY} --from ${PUBLIC_KEY} ${ADDRESS_SPACESHIP} "setupGalaxy(address)" ${ADDRESS_GALAXY}
-cast call --rpc-url ${RPC_URL} --private-key ${SECRET_KEY} --from ${PUBLIC_KEY} ${ADDRESS_URANIUM} "setupGalaxy(address)" ${ADDRESS_GALAXY}
+cast send --rpc-url ${RPC_URL} --legacy --private-key ${SECRET_KEY} ${ADDRESS_SPACESHIP} "setupGalaxy(address)" ${ADDRESS_GALAXY}
+cast send --rpc-url ${RPC_URL} --legacy --private-key ${SECRET_KEY} ${ADDRESS_URANIUM} "setupGalaxy(address)" ${ADDRESS_GALAXY}
 
