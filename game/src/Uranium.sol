@@ -15,12 +15,14 @@ contract Uranium is ERC20, Ownable {
     }
 
     function mine(address recipient, uint256 amount) public {
-        assert(msg.sender == planet);
+        require(msg.sender == planet, "Request not from this Galaxy");
+
         _mint(recipient, amount);
     }
 
     function tryBurn(address account, uint256 amount) public returns (bool ok) {
-        assert(msg.sender == planet);
+        require(msg.sender == planet, "Request not from this Galaxy");
+        
         if (balanceOf(account) >= amount) {
             _burn(account, amount);
             return true;
