@@ -38,15 +38,21 @@ contract Galaxy is ERC721, Ownable {
         NEXT_TOKEN_ID = 1;
     }
 
-    // function withdrawMoney(...)
+    function withdrawDiscoveryExpeditionCosts() public onlyOwner {
+        msg.sender.call{value: address(this).balance}("");
+    }
 
     function attack(uint256 tokenId, uint256 spaceships, uint256 initialInvestment) public {
-        uint256 defenses = _num_shields[tokenId];
+        uint256 defenses = _planets[tokenId].num_shields;
         uint256 subtract_amount = Math.min(defenses, spaceships);
-        bool result = _Spaceships.tryBurn(msg.sender, subtract_amount);
-        assert(result);
 
-        planets[tokenId].num_shields = planets[tokenId].num_shields - subtract_amount;
+        bool resultShip = _Spaceship.tryBurn(msg.sender, subtract_amount);
+        require(resultShip, "Not enough ships");
+
+        bool resultUr = _Uranium.tryBurn(msg.sender, initialInvestment);
+        require(resultUr, "Not enough uranium");
+
+        _planets[tokenId].num_shields = _planets[tokenId].num_shields - subtract_amount + initialInvestment;
 
         if (spaceships > defenses) {
             transferFrom(ownerOf(tokenId), msg.sender, tokenId);
@@ -75,7 +81,7 @@ contract Galaxy is ERC721, Ownable {
 
         _mint(msg.sender, tokenId);
         _planets[tokenId].charted = false;
-        _planets[tokenId].discovery_end_block = block.number + 3;
+        _planets[tokenId].discovery_end_block = block.number + 1;
 
         return tokenId;
     }
@@ -83,7 +89,7 @@ contract Galaxy is ERC721, Ownable {
     function discoveryFinalize(uint256 tokenId) public {
         require(_exists(tokenId), "Planet non-existent");
         require(!_planets[tokenId].charted, "Planet charted");
-        require(_planets[tokenId].discovery_end_block < block.number, "Discovery not completed");
+        require(_planets[tokenId].discovery_end_block + 3 <= block.number, "Discovery not completed");
 
         _planets[tokenId].charted = true;
         _planets[tokenId].uranium_last_payout_block = block.number;
@@ -103,13 +109,27 @@ contract Galaxy is ERC721, Ownable {
         }
 
         if (randomness2 % 4 == 0) {
-            _planets[tokenId].uranium_end_block = 50;
+            _planets[tokenId].uranium_end_block = 7200*5;
         } else if (randomness2 % 4 == 1) {
-            _planets[tokenId].uranium_end_block = 30;
+            _planets[tokenId].uranium_end_block = 7200*3;
         } else if (randomness2 % 4 == 2) {
-            _planets[tokenId].uranium_end_block = 20;
+            _planets[tokenId].uranium_end_block = 7200*2;
         } else if (randomness2 % 4 == 3) {
-            _planets[tokenId].uranium_end_block = 10;
+            _planets[tokenId].uranium_end_block = 7200*1;
         }
+    }
+
+    function buySpaceships(uint256 tokenId) public {
+        require(_exists(tokenId), "Planet non-existent");
+        require(_planets[tokenId].charted, "Planet non-charted");
+
+        
+    }
+
+    function buyShields(uint256 tokenId) public {
+        require(_exists(tokenId), "Planet non-existent");
+        require(_planets[tokenId].charted, "Planet non-charted");
+
+
     }
 }
