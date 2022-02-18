@@ -14,5 +14,7 @@ contract ContractTest is DSTest {
         u = new Resource("Uranium", "U");
         s = new Resource("Spaceship", "S");
         g = new Galaxy(address(u), address(s));
+        u.setupGalaxy(address(g));
+        s.setupGalaxy(address(g));
     }
 }
