@@ -42,7 +42,15 @@ contract Planet is ERC721 {
         _Uranium.mine(ownerOf(tokenId), uranium_mined);
     }
 
-    function attack(uint256 tokenId) public {
-        // ...
+    function attack(uint256 tokenId, uint256 spaceships) public {
+        attackships = Math.min(spaceships, _Spaceships.balanceOf(msg.sender));
+	defenses = _num_shields[tokenId];
+	subtract_amount = Math.min(defenses,attackships);
+	_num_shields[tokenId] = _num_shields[tokenId] - subtract_amount;
+	_Spaceships._burn(msg.sender, subtract_amount);
+	if(attackships > defenses) {
+		transferFrom(ownerOf(tokenId), msg.sender, tokenId);
+	} 
+	
     }
 }
