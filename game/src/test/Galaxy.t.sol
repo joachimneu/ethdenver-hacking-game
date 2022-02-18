@@ -83,17 +83,18 @@ contract ContractTest is DSTest {
         cheats.startPrank(address(0x567));
         g.buildShields(testTokenId, 5);
         assert(g.getNumShields(testTokenId)==5);
+    }
 
     function testAttack() public { 
-        // defender mints uranium
+        // defender mints uranium and spaceships
         cheats.startPrank(address(g));
         u.mint(address(0x567), 10000);
+        u.mint(address(0x555), 10000);
+        s.mint(address(0x555), 5);
+
         // defender builds shield
         cheats.startPrank(address(0x567));
         g.buildShields(testTokenId, 5);
-
-        cheats.startPrank(address(g));
-        s.mint(address(9x555),5);
         
         uint spaceships = 3;
         uint build_shields_immediately = 3;
@@ -101,7 +102,8 @@ contract ContractTest is DSTest {
         
         //failed attack example
                   
-        attack(testTokenId, spaceships, build_shields_immediately);
+        cheats.startPrank(address(0x555));
+        g.attack(testTokenId, spaceships, build_shields_immediately);
         
         assert(s.balanceOf(address(0x555)) == 2);
         
@@ -111,15 +113,19 @@ contract ContractTest is DSTest {
         assert(g.ownerOf(testTokenId) == address(0x567));
 
         // successful attack example
-        s.mint(address(9x555),5);
-        uint spaceships = 5;
+        cheats.startPrank(address(g));
+        s.mint(address(0x555), 5);
 
-        attack(testTokenId, spaceships, build_shields_immediately);
+        assert(s.balanceOf(address(0x555)) == 7);
+        spaceships = 3;
+
+        cheats.startPrank(address(0x555));
+        g.attack(testTokenId, spaceships, build_shields_immediately);
         
         assert(s.balanceOf(address(0x555)) == 5);
         
-        uint num_new_shields = g.getNumShields(testTokenId);
-        assert(num_new_shields == num_initial_shields - spaceships + build_shields_immediately);
+        num_new_shields = g.getNumShields(testTokenId);
+        assert(num_new_shields == 3);
         
         assert(g.ownerOf(testTokenId) == address(0x555));
     }
