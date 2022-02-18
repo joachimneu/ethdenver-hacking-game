@@ -26,6 +26,6 @@ echo "const CONTRACT_ADDRESS_GALAXY = \"${ADDRESS_GALAXY}\";" >> ../ui/js/contra
 echo -n "const ABI_RESOURCE = " > ../ui/js/abi_Resource.js
 cat out/Resource.sol/Resource.json | jq '.abi' >> ../ui/js/abi_Resource.js
 echo ";" >> ../ui/js/abi_Resource.js
-echo -n "const ABI_RESOURCE = " > ../ui/js/abi_Galaxy.js
+echo -n "const ABI_GALAXY = " > ../ui/js/abi_Galaxy.js
 cat out/Galaxy.sol/Galaxy.json | jq '.abi' >> ../ui/js/abi_Galaxy.js
 echo ";" >> ../ui/js/abi_Galaxy.js

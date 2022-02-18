@@ -1,4 +1,4 @@
-const ABI_RESOURCE = [
+const ABI_GALAXY = [
   {
     "type": "constructor",
     "inputs": [
