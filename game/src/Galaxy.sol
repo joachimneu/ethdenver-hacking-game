@@ -42,19 +42,18 @@ contract Galaxy is ERC721, Ownable {
         msg.sender.call.value(address(this).balance)();
     }
 
-    function attack(uint256 tokenId, uint256 spaceships) public {
-        attackships = Math.min(spaceships, _Spaceships.balanceOf(msg.sender));
-	defenses = _num_shields[tokenId];
-	subtract_amount = Math.min(defenses,attackships);
-	_num_shields[tokenId] = _num_shields[tokenId] - subtract_amount;
-	_Spaceships._burn(msg.sender, subtract_amount);
-	if(attackships > defenses) {
-		transferFrom(ownerOf(tokenId), msg.sender, tokenId);
-	} 
+    function attack(uint256 tokenId, uint256 spaceships, uint256 initialInvestment) public {
+        uint256 defenses = _num_shields[tokenId];
+        uint256 subtract_amount = Math.min(defenses, spaceships);
+        bool result = _Spaceships.tryBurn(msg.sender, subtract_amount);
+        assert(result);
+
+        planets[tokenId].num_shields = planets[tokenId].num_shields - subtract_amount;
+
+        if (spaceships > defenses) {
+            transferFrom(ownerOf(tokenId), msg.sender, tokenId);
+        }
     }
-    // function attack(uint256 tokenId) public {
-    //     // ...
-    // }
 
     function mine(uint256 tokenId) public {
         require(_exists(tokenId), "Planet non-existent");
@@ -90,7 +89,7 @@ contract Galaxy is ERC721, Ownable {
 
         _planets[tokenId].charted = true;
         _planets[tokenId].uranium_last_payout_block = block.number;
-        
+
         bytes32 blkhash = blockhash(_planets[tokenId].discovery_end_block);
         uint8 randomness1 = uint8(blkhash[31]);
         uint8 randomness2 = uint8(blkhash[30]);
