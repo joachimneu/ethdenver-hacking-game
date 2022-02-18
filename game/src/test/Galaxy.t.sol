@@ -9,6 +9,8 @@ import "../Galaxy.sol";
 interface CheatCodes {
     function roll(uint256) external;
     function startPrank(address) external;
+    function stopPrank() external;
+    function deal(address who, uint256 newBalance) external;
 }
 
 contract ContractTest is DSTest {
@@ -30,9 +32,12 @@ contract ContractTest is DSTest {
         u.setupGalaxy(address(g));
         s.setupGalaxy(address(g));
         cheats.roll(10);
+        cheats.deal(address(0x567), 1 ether);
+        cheats.startPrank(address(0x567));
         testTokenId = g.discoveryBegin{value: 1 ether}();
         cheats.roll(20);
         g.discoveryFinalize(testTokenId);
+        cheats.stopPrank();
     }
 
     function testMine() public {
@@ -54,11 +59,29 @@ contract ContractTest is DSTest {
         uint256 initbal = address(this).balance;
         g.withdrawDiscoveryExpeditionCosts();
         assert(address(g).balance == 0 ether);
-        assert(address(this).balance == initbal+1 ether);
+        assert(address(this).balance == initbal + 1 ether);
     }
 
     function testFailUnauthorizedWithdraw() public {
         cheats.startPrank(address(0x123));
         g.withdrawDiscoveryExpeditionCosts();
+    }
+
+    function testBuildSpaceships() public {
+        // act as the galaxy to send us some uranium
+        cheats.startPrank(address(g));
+        u.mint(address(0x567), 10000);
+        cheats.startPrank(address(0x567));
+        g.buildSpaceships(5);
+        assert(s.balanceOf(address(0x567))==5);
+    }
+
+    function testBuildShields() public {
+        // act as the galaxy to send us some uranium
+        cheats.startPrank(address(g));
+        u.mint(address(0x567), 10000);
+        cheats.startPrank(address(0x567));
+        g.buildShields(testTokenId, 5);
+        assert(g.getNumShields(testTokenId)==5);
     }
 }
