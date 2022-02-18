@@ -105,13 +105,13 @@ contract Galaxy is ERC721, Ownable {
         }
 
         if (randomness2 % 4 == 0) {
-            _planets[tokenId].uranium_end_block = 50;
+            _planets[tokenId].uranium_end_block = 7200*5;
         } else if (randomness2 % 4 == 1) {
-            _planets[tokenId].uranium_end_block = 30;
+            _planets[tokenId].uranium_end_block = 7200*3;
         } else if (randomness2 % 4 == 2) {
-            _planets[tokenId].uranium_end_block = 20;
+            _planets[tokenId].uranium_end_block = 7200*2;
         } else if (randomness2 % 4 == 3) {
-            _planets[tokenId].uranium_end_block = 10;
+            _planets[tokenId].uranium_end_block = 7200*1;
         }
     }
 }
