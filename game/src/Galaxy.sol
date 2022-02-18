@@ -5,7 +5,7 @@ import "../lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
 import "../lib/openzeppelin-contracts/contracts/utils/math/Math.sol";
 import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 
-import "Resource.sol";
+import "./Resource.sol";
 
 struct Planet {
     bool charted;
@@ -20,20 +20,28 @@ struct Planet {
 
 
 contract Galaxy is ERC721, Ownable {
+    uint256 public constant DISCOVERY_COST = 1 ether;
+    uint public constant DISCOVERY_DURATION = 3;
+    uint public constant DISCOVERY_MAX_TOKENID = 10000;
+    uint public constant SPACESHIP_POWER = 1;
+    uint public constant SPACESHIP_COST = 1;
+    uint public constant SHIELD_POWER = 1;
+    uint public constant SHIELD_COST = 1;
+
     // dependencies on other contracts
     Resource _Uranium;
     Resource _Spaceship;
-    uint256 COST_DISCOVERY_EXPEDITION;
-    uint256 NEXT_TOKEN_ID;
+
+    // discovery of planets
+    uint256 _next_token_id;
 
     // Mapping from token ID to ...
     mapping(uint256 => Planet) private _planets;
 
-    constructor(address uran, address ship, uint256 cost_discovery_expedition) ERC721("Planet", "PLNT") {
+    constructor(address uran, address ship) ERC721("Planet", "PLNT") {
         _Uranium = Resource(uran);
         _Spaceship = Resource(ship);
-        COST_DISCOVERY_EXPEDITION = cost_discovery_expedition;
-        NEXT_TOKEN_ID = 1;
+        _next_token_id = 1;
     }
 
     function withdrawDiscoveryExpeditionCosts() public onlyOwner {
@@ -72,10 +80,11 @@ contract Galaxy is ERC721, Ownable {
     }
 
     function discoveryBegin() public payable returns (uint256) {
-        require(msg.value >= COST_DISCOVERY_EXPEDITION, "Expedition more expensive!");
+        require(msg.value >= DISCOVERY_COST, "Expedition more expensive!");
+        require(_next_token_id <= DISCOVERY_MAX_TOKENID, "All planets in this Galaxy discovered!");
 
-        uint256 tokenId = NEXT_TOKEN_ID;
-        NEXT_TOKEN_ID += 1;
+        uint256 tokenId = _next_token_id;
+        _next_token_id += 1;
 
         _mint(msg.sender, tokenId);
         _planets[tokenId].charted = false;
@@ -117,17 +126,24 @@ contract Galaxy is ERC721, Ownable {
         }
     }
 
-    function buySpaceships(uint256 tokenId) public {
-        require(_exists(tokenId), "Planet non-existent");
-        require(_planets[tokenId].charted, "Planet non-charted");
+    function buildSpaceships(uint256 spaceships) public {
+        uint256 cost = spaceships * SPACESHIP_COST;
 
-        
+        bool burn_success = _Uranium.tryBurn(msg.sender, cost);
+        require(burn_success, "Not enough uranium");
+
+        _Spaceship.mine(msg.sender, spaceships);
     }
 
-    function buyShields(uint256 tokenId) public {
+    function buildShields(uint256 tokenId, uint256 shields) public {
         require(_exists(tokenId), "Planet non-existent");
         require(_planets[tokenId].charted, "Planet non-charted");
 
+        uint256 cost = shields * SHIELD_COST;
 
+        bool burn_success = _Uranium.tryBurn(msg.sender, cost);
+        require(burn_success, "Not enough uranium");
+
+        _planets[tokenId].num_shields += shields;
     }
 }
