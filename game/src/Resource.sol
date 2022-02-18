@@ -19,7 +19,7 @@ contract Resource is ERC20, Ownable {
         _;
     }
 
-    function mine(address recipient, uint256 amount) public onlyGalaxy {
+    function mint(address recipient, uint256 amount) public onlyGalaxy {
         _mint(recipient, amount);
     }
 

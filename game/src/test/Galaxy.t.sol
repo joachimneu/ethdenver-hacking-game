@@ -2,6 +2,7 @@
 pragma solidity ^0.8.10;
 
 import "ds-test/test.sol";
+
 import "../Resource.sol";
 import "../Galaxy.sol";
 

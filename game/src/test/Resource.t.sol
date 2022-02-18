@@ -30,32 +30,32 @@ contract ResourceTest is DSTest {
         u.setupGalaxy(p);
     }
 
-    function testGalaxyMineAuthorizedBurn() public {
+    function testGalaxyMintAuthorizedBurn() public {
         u.setupGalaxy(address(0x123));
         cheats.startPrank(address(0x123));
 
-        u.mine(address(0x456), 100);
+        u.mint(address(0x456), 100);
         assertEq(u.balanceOf(address(0x456)), 100);
 
         u.burn(address(0x456), 5);
         assertEq(u.balanceOf(address(0x456)), 95);
     }
 
-    function testFailGalaxyMineUnauthorizedBurn() public {
+    function testFailGalaxyMintUnauthorizedBurn() public {
         u.setupGalaxy(address(0x123));
         cheats.startPrank(address(0x123));
 
-        u.mine(address(0x456), 100);
+        u.mint(address(0x456), 100);
         assertEq(u.balanceOf(address(0x456)), 100);
 
         u.burn(address(0x456), 1000);
     }
 
-    function testFailUnauthorizedMine() public {
+    function testFailUnauthorizedMint() public {
         u.setupGalaxy(address(0x123));
         cheats.startPrank(address(0x124));
 
-        u.mine(address(0x456), 100);
+        u.mint(address(0x456), 100);
     }
 
     function testFailUnauthorizedBurn() public {
