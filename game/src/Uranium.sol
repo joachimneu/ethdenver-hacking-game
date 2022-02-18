@@ -6,6 +6,7 @@ import "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 
 contract Uranium is ERC20, Ownable {
     address planet;
+    
     constructor() ERC20("Uranium", "URAN") {
     }
 
