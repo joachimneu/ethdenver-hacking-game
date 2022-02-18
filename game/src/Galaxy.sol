@@ -44,7 +44,8 @@ contract Galaxy is ERC721, Ownable {
     }
 
     function withdrawDiscoveryExpeditionCosts() public onlyOwner {
-        msg.sender.call{value: address(this).balance}("");
+        (bool sent, bytes memory data) = msg.sender.call{value: address(this).balance}("");
+        require(sent, "Failed to withdraw");
     }
 
     function attack(uint256 tokenId, uint256 spaceships, uint build_shields_immediately) public {

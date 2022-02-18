@@ -8,6 +8,7 @@ import "../Galaxy.sol";
 
 interface CheatCodes {
     function roll(uint256) external;
+    function startPrank(address) external;
 }
 
 contract ContractTest is DSTest {
@@ -17,6 +18,10 @@ contract ContractTest is DSTest {
     uint256 testTokenId;
 
     CheatCodes cheats = CheatCodes(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
+
+    receive() external payable {}
+
+    fallback() external payable {}
 
     function setUp() public {
         u = new Resource("Uranium", "U");
@@ -42,5 +47,18 @@ contract ContractTest is DSTest {
         assert(u.balanceOf(g.ownerOf(testTokenId))>=30);
         // there seems to be no cheatcode in forge to set
         // block hash
+    }
+
+    function testWithdraw() public {
+        assert(address(g).balance == 1 ether);
+        uint256 initbal = address(this).balance;
+        g.withdrawDiscoveryExpeditionCosts();
+        assert(address(g).balance == 0 ether);
+        assert(address(this).balance == initbal+1 ether);
+    }
+
+    function testFailUnauthorizedWithdraw() public {
+        cheats.startPrank(address(0x123));
+        g.withdrawDiscoveryExpeditionCosts();
     }
 }
