@@ -52,11 +52,13 @@ contract Galaxy is ERC721, Ownable {
         uint256 defenses = _planets[tokenId].num_shields;
         uint256 subtract_amount = Math.min(defenses, spaceships);
 
-        bool resultShip = _Spaceship.tryBurn(msg.sender, subtract_amount);
-        require(resultShip, "Not enough ships");
+        _Spaceship.burn(msg.sender, subtract_amount);
+        _Uranium.burn(msg.sender, initialInvestment);
+        // bool resultShip = _Spaceship.tryBurn(msg.sender, subtract_amount);
+        // require(resultShip, "Not enough ships");
 
-        bool resultUr = _Uranium.tryBurn(msg.sender, initialInvestment);
-        require(resultUr, "Not enough uranium");
+        // bool resultUr = _Uranium.tryBurn(msg.sender, initialInvestment);
+        // require(resultUr, "Not enough uranium");
 
         _planets[tokenId].num_shields = _planets[tokenId].num_shields - subtract_amount + initialInvestment;
 
@@ -129,9 +131,9 @@ contract Galaxy is ERC721, Ownable {
     function buildSpaceships(uint256 spaceships) public {
         uint256 cost = spaceships * SPACESHIP_COST;
 
-        bool burn_success = _Uranium.tryBurn(msg.sender, cost);
-        require(burn_success, "Not enough uranium");
-
+        // bool burn_success = _Uranium.tryBurn(msg.sender, cost);
+        // require(burn_success, "Not enough uranium");
+        _Uranium.burn(msg.sender, cost);
         _Spaceship.mine(msg.sender, spaceships);
     }
 
@@ -141,9 +143,9 @@ contract Galaxy is ERC721, Ownable {
 
         uint256 cost = shields * SHIELD_COST;
 
-        bool burn_success = _Uranium.tryBurn(msg.sender, cost);
-        require(burn_success, "Not enough uranium");
-
+        // bool burn_success = _Uranium.tryBurn(msg.sender, cost);
+        // require(burn_success, "Not enough uranium");
+        _Uranium.burn(msg.sender, cost);
         _planets[tokenId].num_shields += shields;
     }
 }

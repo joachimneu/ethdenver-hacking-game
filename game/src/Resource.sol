@@ -5,29 +5,26 @@ import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 import "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 
 contract Resource is ERC20, Ownable {
-    address planet;
+    address galaxy;
     
     constructor(string memory name, string memory ticker) ERC20(name, ticker) {
     }
 
-    function setup(address planetAddr) public onlyOwner {
-        planet = planetAddr;
+    function setupGalaxy(address galaxyAddr) public onlyOwner {
+        galaxy = galaxyAddr;
     }
 
-    function mine(address recipient, uint256 amount) public {
-        require(msg.sender == planet, "Request not from this Galaxy");
+    modifier onlyGalaxy() {
+        require(msg.sender == galaxy, "Request not from this galaxy");
+        _;
+    }
 
+    function mine(address recipient, uint256 amount) public onlyGalaxy {
         _mint(recipient, amount);
     }
 
-    function tryBurn(address account, uint256 amount) public returns (bool ok) {
-        require(msg.sender == planet, "Request not from this Galaxy");
-
-        if (balanceOf(account) >= amount) {
-            _burn(account, amount);
-            return true;
-        } else {
-            return false;
-        }
+    function burn(address account, uint256 amount) public onlyGalaxy {
+        // require(balanceOf(account) >= amount, "Insufficient resource"); // <--- already done by OpenZeppelin library
+        _burn(account, amount);
     }
 }

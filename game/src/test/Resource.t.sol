@@ -19,42 +19,47 @@ contract ResourceTest {
 
     function testSetPlanet() public {
         address p = address(0x123);
-        u.setup(p);
+        u.setupGalaxy(p);
     }
 
     function testFailNonOwnerSetPlanet() public {
         cheats.prank(address(0x123));
         address p = address(0x123);
-        u.setup(p);
+        u.setupGalaxy(p);
     }
 
-    function testPlanetMineBurn() public {
-        u.setup(address(0x123));
+    function testPlanetMineAuthorizedBurn() public {
+        u.setupGalaxy(address(0x123));
         cheats.startPrank(address(0x123));
 
         u.mine(address(0x456), 100);
         assert(u.balanceOf(address(0x456)) == 100);
 
-        bool res = u.tryBurn(address(0x456), 1000);
-        assert(res == false);
-        assert(u.balanceOf(address(0x456)) == 100);
-
-        res = u.tryBurn(address(0x456), 5);
-        assert(res == true);
+        u.burn(address(0x456), 5);
         assert(u.balanceOf(address(0x456)) == 95);
     }
 
+    function testFailPlanetMineUnauthorizedBurn() public {
+        u.setupGalaxy(address(0x123));
+        cheats.startPrank(address(0x123));
+
+        u.mine(address(0x456), 100);
+        assert(u.balanceOf(address(0x456)) == 100);
+
+        u.burn(address(0x456), 1000);
+    }
+
     function testFailUnauthorizedMine() public {
-        u.setup(address(0x123));
+        u.setupGalaxy(address(0x123));
         cheats.startPrank(address(0x124));
 
         u.mine(address(0x456), 100);
     }
 
     function testFailUnauthorizedBurn() public {
-        u.setup(address(0x123));
+        u.setupGalaxy(address(0x123));
         cheats.startPrank(address(0x124));
 
-        u.tryBurn(address(0x456), 100);
+        u.burn(address(0x456), 100);
     }
 }
