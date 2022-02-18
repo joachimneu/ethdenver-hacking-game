@@ -2,12 +2,15 @@
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script src="./jquery-3.6.0.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="./abi_Resource.js"></script>
+        <script src="./abi_Galaxy.js"></script>
         <script type="module">
             import { ethers } from "./ethers-5.2.esm.min.js";
 
-            const CONTRACT_ADDRESS_URANIUM = "";
-            const CONTRACT_ADDRESS_SPACESHIP = "";
-            const CONTRACT_ADDRESS_PLANET = "";
+            const CONTRACT_ADDRESS_URANIUM = "0xcbcf1adc9b7bfb7d871af5bf304cdc5b90d6432e";
+            const CONTRACT_ADDRESS_SPACESHIP = "0xf099eb18c3c57b804784d7173150e78ee33f8cf0";
+            const CONTRACT_ADDRESS_GALAXY = "0x22a59f0202156d315ef8a9141ea724d57fc25cbb";
             
 
             // A Web3Provider wraps a standard Web3 provider, which is
@@ -23,14 +26,27 @@
             const signer = provider.getSigner();
 
 
-            const UraniumContract = new ethers.ERC20Contract(CONTRACT_ADDRESS_URANIUM, provider);
-            const SpaceshipContract = new ethers.ERC20Contract(CONTRACT_ADDRESS_SPACESHIP, provider);
-            // const PlanetContract = new ethers.ERC20Contract(CONTRACT_ADDRESS_PLANET, provider);
+            const UraniumContract = new ethers.Contract(CONTRACT_ADDRESS_URANIUM, abi_Resource, provider).connect(signer);
+            const SpaceshipContract = new ethers.Contract(CONTRACT_ADDRESS_SPACESHIP, abi_Resource, provider).connect(signer);
+            const GalaxyContract = new ethers.Contract(CONTRACT_ADDRESS_GALAXY, abi_Galaxy, provider).connect(signer);
 
 
-            function update_view() {
-                // $("#display_blockheight").text = provider.b;
+            // async function setup_galaxy() {
+            //     console.log(await UraniumContract.setupGalaxy(CONTRACT_ADDRESS_GALAXY));
+            //     console.log(await SpaceshipContract.setupGalaxy(CONTRACT_ADDRESS_GALAXY));
+            // }
+
+            // await setup_galaxy();
+
+
+            async function update_view() {
+                $("#display_eth").text(await signer.getBalance() / 1e18);
+                $("#display_blockheight").text(await provider.getBlockNumber());
+                $("#display_uranium").text(await UraniumContract.balanceOf(await signer.getAddress()));
+                $("#display_spaceships").text(await SpaceshipContract.balanceOf(await signer.getAddress()));
             }
+
+            await update_view();
 
 
             console.log(provider);
@@ -41,6 +57,10 @@
     </head>
     <body>
         <div>
+            <p>
+                <span>💸</span>
+                <span id="display_eth"></span>
+            </p>
             <p>
                 <span>⌚</span>
                 <span id="display_blockheight"></span>
