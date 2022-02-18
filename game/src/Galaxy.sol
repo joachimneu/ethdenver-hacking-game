@@ -81,7 +81,7 @@ contract Galaxy is ERC721, Ownable {
 
         _mint(msg.sender, tokenId);
         _planets[tokenId].charted = false;
-        _planets[tokenId].discovery_end_block = block.number + 3;
+        _planets[tokenId].discovery_end_block = block.number + 1;
 
         return tokenId;
     }
@@ -89,7 +89,7 @@ contract Galaxy is ERC721, Ownable {
     function discoveryFinalize(uint256 tokenId) public {
         require(_exists(tokenId), "Planet non-existent");
         require(!_planets[tokenId].charted, "Planet charted");
-        require(_planets[tokenId].discovery_end_block < block.number, "Discovery not completed");
+        require(_planets[tokenId].discovery_end_block + 3 <= block.number, "Discovery not completed");
 
         _planets[tokenId].charted = true;
         _planets[tokenId].uranium_last_payout_block = block.number;
@@ -117,5 +117,19 @@ contract Galaxy is ERC721, Ownable {
         } else if (randomness2 % 4 == 3) {
             _planets[tokenId].uranium_end_block = 7200*1;
         }
+    }
+
+    function buySpaceships(uint256 tokenId) public {
+        require(_exists(tokenId), "Planet non-existent");
+        require(_planets[tokenId].charted, "Planet non-charted");
+
+        
+    }
+
+    function buyShields(uint256 tokenId) public {
+        require(_exists(tokenId), "Planet non-existent");
+        require(_planets[tokenId].charted, "Planet non-charted");
+
+
     }
 }
