@@ -40,6 +40,20 @@ contract Galaxy is ERC721, Ownable {
 
     // function withdrawMoney(...)
 
+    function attack(uint256 tokenId, uint256 spaceships) public {
+        attackships = Math.min(spaceships, _Spaceships.balanceOf(msg.sender));
+	defenses = _num_shields[tokenId];
+	subtract_amount = Math.min(defenses,attackships);
+	_num_shields[tokenId] = _num_shields[tokenId] - subtract_amount;
+	_Spaceships._burn(msg.sender, subtract_amount);
+	if(attackships > defenses) {
+		transferFrom(ownerOf(tokenId), msg.sender, tokenId);
+	} 
+    }
+    // function attack(uint256 tokenId) public {
+    //     // ...
+    // }
+
     function mine(uint256 tokenId) public {
         require(_exists(tokenId), "Planet non-existent");
         require(_planets[tokenId].charted, "Planet non-charted");
