@@ -39,18 +39,20 @@ contract Galaxy is ERC721, Ownable {
     }
 
     function withdrawDiscoveryExpeditionCosts() public onlyOwner {
-        msg.sender.call.value(address(this).balance)();
+        msg.sender.call{value: address(this).balance}("");
     }
 
     function attack(uint256 tokenId, uint256 spaceships, uint256 initialInvestment) public {
-        uint256 defenses = _num_shields[tokenId];
+        uint256 defenses = _planets[tokenId].num_shields;
         uint256 subtract_amount = Math.min(defenses, spaceships);
-        bool resultShip = _Spaceships.tryBurn(msg.sender, subtract_amount);
-        assert(resultShip);
-	bool resultUr = _Uranium.tryBurn(msg.sender, initialInvestment);
-	assert(resultUr);
 
-        planets[tokenId].num_shields = planets[tokenId].num_shields - subtract_amount + initialInvestment;
+        bool resultShip = _Spaceship.tryBurn(msg.sender, subtract_amount);
+        require(resultShip, "Not enough ships");
+
+        bool resultUr = _Uranium.tryBurn(msg.sender, initialInvestment);
+        require(resultUr, "Not enough uranium");
+
+        _planets[tokenId].num_shields = _planets[tokenId].num_shields - subtract_amount + initialInvestment;
 
         if (spaceships > defenses) {
             transferFrom(ownerOf(tokenId), msg.sender, tokenId);
