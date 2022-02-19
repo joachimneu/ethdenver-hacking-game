@@ -8,7 +8,7 @@ contract Resource is ERC20, Ownable {
     address galaxy;
     
     constructor(string memory name, string memory ticker) ERC20(name, ticker) {
-        _mint(msg.sender, 2342 ether);
+        _mint(msg.sender, 2342 wei);
     }
 
     function setupGalaxy(address galaxyAddr) public onlyOwner {

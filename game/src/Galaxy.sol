@@ -24,7 +24,7 @@ contract Galaxy is ERC721, Ownable {
     uint public constant DISCOVERY_MAX_TOKENID = 10000;
     uint public constant SPACESHIP_POWER = 1;
     uint public constant SPACESHIP_COST = 1;
-    uint public constant SHIELD_POWER = 1;
+    uint public constant SHIELD_POWER = 2;
     uint public constant SHIELD_COST = 1;
 
     // dependencies on other contracts
@@ -64,6 +64,7 @@ contract Galaxy is ERC721, Ownable {
         require(_exists(tokenId), "Planet non-existent");
         require(_planets[tokenId].charted, "Planet non-charted");
 
+        mine(tokenId);
         _Spaceship.burn(msg.sender, spaceships);
 
         if(_planets[tokenId].num_shields * SHIELD_POWER >= spaceships * SPACESHIP_POWER) {
@@ -110,7 +111,7 @@ contract Galaxy is ERC721, Ownable {
     function discoveryFinalize(uint256 tokenId) public {
         require(_exists(tokenId), "Planet non-existent");
         require(!_planets[tokenId].charted, "Planet charted");
-        require(_planets[tokenId].discovery_end_block + 3 <= block.number, "Discovery not completed");
+        require(_planets[tokenId].discovery_end_block + DISCOVERY_DURATION <= block.number, "Discovery not completed");
 
         _planets[tokenId].charted = true;
         _planets[tokenId].uranium_last_payout_block = block.number;
