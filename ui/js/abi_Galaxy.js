@@ -243,6 +243,19 @@ const ABI_GALAXY = [
   },
   {
     "type": "function",
+    "name": "getNumPlanets",
+    "inputs": [],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "getNumShields",
     "inputs": [
       {
@@ -256,6 +269,45 @@ const ABI_GALAXY = [
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getPlanet",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "internalType": "struct Planet",
+        "name": "",
+        "type": "tuple",
+        "components": [
+          {
+            "type": "bool"
+          },
+          {
+            "type": "uint256"
+          },
+          {
+            "type": "uint256"
+          },
+          {
+            "type": "uint256"
+          },
+          {
+            "type": "uint256"
+          },
+          {
+            "type": "uint256"
+          }
+        ]
       }
     ],
     "stateMutability": "view"

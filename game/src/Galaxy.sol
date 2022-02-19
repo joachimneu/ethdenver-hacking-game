@@ -51,6 +51,10 @@ contract Galaxy is ERC721, Ownable {
         return _next_token_id;
     }
 
+    function getPlanet(uint256 tokenId) public view returns (Planet memory) {
+        return _planets[tokenId];
+    }
+
     function withdrawDiscoveryExpeditionCosts() public onlyOwner {
         (bool sent, bytes memory data) = msg.sender.call{value: address(this).balance}("");
         require(sent, "Failed to withdraw");

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="./css/bootstrap.min.css" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="./css/bootstrap.min.css" rel="stylesheet" />
         <script src="./js/bootstrap.bundle.min.js"></script>
         <script src="./js/jquery-3.6.0.min.js"></script>
         <script src="./js/abi_Resource.js"></script>
@@ -38,11 +39,50 @@
             // await setup_galaxy();
 
 
+            // async function listTokensOfOwner({ token: tokenAddress, account }) {
+            //     const token = await ethers.getContractAt(ERC721.abi, tokenAddress, ethers.provider);
+
+            //     console.error(await token.name(), 'tokens owned by', account);
+
+            //     const sentLogs = await token.queryFilter(
+            //         token.filters.Transfer(account, null),
+            //     );
+            //     const receivedLogs = await token.queryFilter(
+            //         token.filters.Transfer(null, account),
+            //     );
+
+            //     const logs = sentLogs.concat(receivedLogs)
+            //         .sort(
+            //         (a, b) =>
+            //             a.blockNumber - b.blockNumber ||
+            //             a.transactionIndex - b.TransactionIndex,
+            //         );
+
+            //     const owned = new Set();
+
+            //     for (const log of logs) {
+            //         const { from, to, tokenId } = log.args;
+                    
+            //         if (addressEqual(to, account)) {
+            //             owned.add(tokenId.toString());
+            //         } else if (addressEqual(from, account)) {
+            //             owned.delete(tokenId.toString());
+            //         }
+            //     }
+
+            //     console.log([...owned].join('\n'));
+            // };
+
+
             async function update_view() {
                 $("#display_eth").text(await signer.getBalance() / 1e18);
                 $("#display_blockheight").text(await provider.getBlockNumber());
-                $("#display_uranium").text(await UraniumContract.balanceOf(await signer.getAddress()));
-                $("#display_spaceships").text(await SpaceshipContract.balanceOf(await signer.getAddress()));
+                $("#display_uranium").text(await UraniumContract.balanceOf(await signer.getAddress()) / 1e18);
+                $("#display_spaceships").text(await SpaceshipContract.balanceOf(await signer.getAddress()) / 1e18);
+
+                for(var i=1; i<await GalaxyContract.getNumPlanets(); i++) {
+                    console.log();
+                }
             }
 
             await update_view();
@@ -52,35 +92,146 @@
                     await update_view();
                     console.log("View updated!");
                 });
+
+                $("#button_discovery_begin").on("click", async function() {
+                    GalaxyContract.discoveryBegin({ value: ethers.utils.parseUnits("3.0", "ether") });
+                });
+            });
+
+            $(window).on('hashchange', function(e) {
+                var origEvent = e.originalEvent;
+                console.log(window.location.hash);
+
+                $(".my_view").css({'display': 'none'});
+                $(".my_nav").removeClass("active");
+
+                if(window.location.hash == "#planets") {
+                    $("#view_planets").css({'display': 'block'});
+                    $("#nav_planets").addClass("active");
+                } else if(window.location.hash == "#discover") {
+                    $("#view_discover").css({'display': 'block'});
+                    $("#nav_discover").addClass("active");
+                } else if(window.location.hash == "#mine") {
+                    $("#view_mine").css({'display': 'block'});
+                    $("#nav_mine").addClass("active");
+                } else if(window.location.hash == "#attack") {
+                    $("#view_attack").css({'display': 'block'});
+                    $("#nav_attack").addClass("active");
+                } else if(window.location.hash == "#buildspaceships") {
+                    $("#view_buildspaceships").css({'display': 'block'});
+                    $("#nav_buildspaceships").addClass("active");
+                } else if(window.location.hash == "#buildshields") {
+                    $("#view_buildshields").css({'display': 'block'});
+                    $("#nav_buildshields").addClass("active");
+                }
             });
 
         </script>
+        <style>
+
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+    
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                    font-size: 3.5rem;
+                }
+            }
+
+        </style>
+        <link href="css/cover-bootstrap-theme.css" rel="stylesheet" />
         <!-- ⏳ -->
         <!-- 🛡️ -->
     </head>
-    <body>
-        <div>
+    <body class="d-flex h-100 text-center text-white bg-dark">
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+            <header class="mb-auto">
+                <div>
+                    <h3 class="float-md-start mb-0">Galaxy War</h3>
+                    <nav class="nav nav-masthead justify-content-center float-md-end">
+                        <!-- <a class="nav-link active" href="#">Home</a>
+                        <a class="nav-link" href="#">Features</a>
+                        <a class="nav-link" href="#">Contact</a> -->
+                        <a class="nav-link my_nav" id="nav_planets" href="#planets">🪐</a>
+                        <a class="nav-link my_nav" id="nav_discover" href="#discover">🔍</a>
+                        <a class="nav-link my_nav" id="nav_mine" href="#mine">⛏️</a>
+                        <a class="nav-link my_nav" id="nav_attack" href="#attack">🤺</a>
+                        <a class="nav-link my_nav" id="nav_buildspaceships" href="#buildspaceships">🚀</a>
+                        <a class="nav-link my_nav" id="nav_buildshields" href="#buildshields">🛡️</a>
+                    </nav>
+                </div>
+            </header>
+        
+            <main class="px-3" id="resources">
+                <p style="font-size: 2em; margin-bottom: 2em;">
+                    <span>💸</span>
+                    <span id="display_eth"></span>
+                    <span>⌚</span>
+                    <span id="display_blockheight"></span>
+                    <span>☢️</span>
+                    <span id="display_uranium"></span>
+                    <span>🚀</span>
+                    <span id="display_spaceships"></span>
+                    <a href="#planets" id="button_update_view" style="text-decoration: none; cursor: pointer;">🔄</a>
+                </p>
+            </main>
+        
+            <!-- <main class="px-3" id="view_planets">
+                <h1>Planets</h1>
+                <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
+                <p class="lead">
+                    <a href="#" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Learn more</a>
+                </p>
+            </main> -->
+        
+            <main class="px-3 my_view" style="display: none;" id="view_planets">
+                <h1>Planets</h1>
+                <ol></ol>
+            </main>
+        
+            <!-- could be global ... -->
+            <main class="px-3 my_view" style="display: none;" id="view_discover">
+                <h1>Discover</h1>
+                <button id="button_discovery_begin">Start discovery</button>
+            </main>
+        
+            <!-- should be a property of a planet -->
+            <main class="px-3 my_view" style="display: none;" id="view_mine">
+                <h1>Mine</h1>
+            </main>
+        
+            <!-- should be a property of a planet -->
+            <main class="px-3 my_view" style="display: none;" id="view_attack">
+                <h1>Attack</h1>
+            </main>
+        
+            <!-- could be global ... -->
+            <main class="px-3 my_view" style="display: none;" id="view_buildspaceships">
+                <h1>Build Spaceships</h1>
+                <button id="button_discovery_begin">Start discovery</button>
+            </main>
+        
+            <!-- should be a property of a planet -->
+            <main class="px-3 my_view" style="display: none;" id="view_buildshields">
+                <h1>Build Shields</h1>
+            </main>
+          
+            <footer class="mt-auto text-white-50">
+              <p>Cover template for <a href="https://getbootstrap.com/" class="text-white">Bootstrap</a>, by <a href="https://twitter.com/mdo" class="text-white">@mdo</a>.</p>
+            </footer>
+        </div>
+        <!-- <div>
             <div>
                 <button id="button_update_view">Update view</button>
             </div>
         </div>
         <div>
-            <p>
-                <span>💸</span>
-                <span id="display_eth"></span>
-            </p>
-            <p>
-                <span>⌚</span>
-                <span id="display_blockheight"></span>
-            </p>
-            <p>
-                <span>☢️</span>
-                <span id="display_uranium"></span>
-            </p>
-            <p>
-                <span>🚀</span>
-                <span id="display_spaceships"></span>
-            </p>
+
         </div>
         <div>
             <div>
@@ -105,6 +256,9 @@
             <div>
                 <h1>Build shields</h1>
             </div>
-        </div>
+        </div> -->
     </body>
 </html>
+
+
+
